@@ -22,6 +22,7 @@ tasks:
     init: > 
       mkdir -p data/bookkeeper && 
       mkdir -p data/zookeeper && 
+      mkdir -p data/mysql && 
       sudo chmod -R 777 ./data
   - name: Pull el Docker compose
     init: gp sync-await images

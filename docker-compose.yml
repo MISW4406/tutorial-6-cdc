@@ -98,6 +98,21 @@ services:
     command: bash -c "bin/apply-config-from-env.py conf/broker.conf
       &&  exec bin/pulsar broker"
   
+  # MySQL8
+  db:
+    image: mysql:8
+    cap_add:
+      - SYS_NICE
+    restart: always
+    environment:
+      - MYSQL_DATABASE=reservas
+      - MYSQL_ROOT_PASSWORD=adminadmin
+    profiles: ["aeroalpes", "db"]
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  
   # Servicios de AeroAlpes
   aeroalpes:
     container_name: aeroalpes
@@ -111,6 +126,7 @@ services:
       SidecarDiscover: "false"
     depends_on:
       - broker
+      - db
     environment:
       - AEROALPES_ADDRESS=aeroalpes
       - PULSAR_ADDRESS=broker
