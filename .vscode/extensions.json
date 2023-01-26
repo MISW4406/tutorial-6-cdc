@@ -1,5 +1,6 @@
 {
     "recommendations": [
-        "ritwickdey.liveserver"
+        "ritwickdey.liveserver",
+        "cweijan.vscode-mysql-client2"
     ]
 }
