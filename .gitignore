@@ -133,3 +133,5 @@ dmypy.json
 
 # Data Volume for Zookeeper
 /data
+/bin
+/connectors

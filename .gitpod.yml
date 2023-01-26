@@ -18,12 +18,16 @@ tasks:
       docker build . -f notificacion.Dockerfile -t aeroalpes/notificacion &&
       docker build . -f ui.Dockerfile -t aeroalpes/ui &&
       gp sync-done images
-  - name: Crear folder para datos y asigna permisos
+  - name: Crear folder para datos, clientes, conectores y asigna permisos
     init: > 
       mkdir -p data/bookkeeper && 
       mkdir -p data/zookeeper && 
       mkdir -p data/mysql && 
-      sudo chmod -R 777 ./data
+      mkdir -p bin/pulsar &&
+      mkdir -p connectors/pulsar && 
+      sudo chmod -R 777 ./data &&
+      sudo chmod -R 777 ./bin &&
+      sudo chmod -R 777 ./connectors
   - name: Pull el Docker compose
     init: gp sync-await images
     command: docker-compose pull
