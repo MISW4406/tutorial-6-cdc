@@ -23,10 +23,7 @@ tasks:
       mkdir -p data/bookkeeper && 
       mkdir -p data/zookeeper && 
       mkdir -p data/mysql && 
-      mkdir -p bin/pulsar &&
-      mkdir -p connectors/pulsar && 
       sudo chmod -R 777 ./data &&
-      sudo chmod -R 777 ./bin &&
       sudo chmod -R 777 ./connectors
   - name: Pull el Docker compose
     init: gp sync-await images

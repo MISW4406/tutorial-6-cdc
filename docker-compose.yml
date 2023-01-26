@@ -96,7 +96,6 @@ services:
       - "6650:6650"
       - "8080:8080"
     volumes:
-      - ./bin/pulsar:/pulsar/bin
       - ./connectors/pulsar:/pulsar/connectors
     command: bash -c "bin/apply-config-from-env.py conf/broker.conf
       &&  exec bin/pulsar broker"
@@ -104,6 +103,8 @@ services:
   # MySQL8
   db:
     image: mysql:8
+    hostname: mysqldb
+    container_name: mysqldb
     cap_add:
       - SYS_NICE
     restart: always
@@ -111,6 +112,8 @@ services:
       - MYSQL_DATABASE=reservas
       - MYSQL_ROOT_PASSWORD=adminadmin
     profiles: ["aeroalpes", "db"]
+    networks:
+      - pulsar
     ports:
       - '3306:3306'
     volumes:
