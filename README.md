@@ -232,17 +232,49 @@ fuser -k <puerto>/tcp
 docker-compose --profile <pulsar|aeroalpes|ui|notificacion> up
 ```
 
-
- wget https://archive.apache.org/dist/pulsar/pulsar-2.10.1/connectors/pulsar-io-debezium-mysql-2.10.1.nar
-
- bin/pulsar-admin source localrun --source-config-file /pulsar/connectors/debezium-mysql-source-config.yaml
-
- https://pulsar.apache.org/download/
- https://pulsar.apache.org/docs/2.10.x/io-cdc-debezium/
-
-./bin/pulsar-admin source localrun --source-config-file /pulsar/connectors/debezium-mysql-source-config.yaml --destination-topic-name debezium-mysql-topic
+### Descargar conector de Debezium
+wget https://archive.apache.org/dist/pulsar/pulsar-2.10.1/connectors/pulsar-io-debezium-mysql-2.10.1.nar
 
 
-./bin/pulsar-client consume -s "sub-datos" public/default/aeroalpesdb.reservas.usuarios_legado -n 0
+### Instrucciones oficiales
+https://pulsar.apache.org/download/
+https://pulsar.apache.org/docs/2.10.x/io-cdc-debezium/
 
+
+### Ejecutar Debezium
+Abrir en una terminal:
+
+```bash
 docker exec -it broker bash
+```
+
+Ya dentro de la contenedora ejecute:
+```bash
+./bin/pulsar-admin source localrun --source-config-file /pulsar/connectors/debezium-mysql-source-config.yaml --destination-topic-name debezium-mysql-topic
+```
+
+### Consumir eventos Debezium
+Abrir en una terminal:
+
+```bash
+docker exec -it broker bash
+```
+
+Ya dentro de la contenedora ejecute:
+
+```bash
+./bin/pulsar-client consume -s "sub-datos" public/default/aeroalpesdb.reservas.usuarios_legado -n 0
+```
+
+### Consultar tópicos
+Abrir en una terminal:
+
+```bash
+docker exec -it broker bash
+```
+
+Ya dentro de la contenedora ejecute:
+
+```bash
+./bin/pulsar-admin topics list public/default
+```
