@@ -175,6 +175,8 @@ docker run aeroalpes/ui
 
 ## CDC & Debezium
 
+**Nota**: Antes de poder ejectuar todos los siguientes comandos DEBE tener la base de datos MySQL corriendo.
+
 ### Descargar conector de Debezium
 
 ```
