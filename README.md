@@ -1,6 +1,6 @@
-# Tutorial 6 - Change Data Capture (CDC)
+# Tutorial 6 - Change Data Capture (CDC) & Outbox
 
-Repositorio con código base para la liberación de datos por medio de eventos con carga de estados usando un mecanismo de logs. El presente repositorio usa un conector de [Debezium](https://debezium.io/) para poder oir los cambios en el log binario de una base de datos MySQL.
+Repositorio con código base para la liberación de datos por medio de eventos con carga de estados usando un mecanismo de logs. El presente repositorio usa un conector de [Debezium](https://debezium.io/) para poder oir los cambios en el log binario de una base de datos MySQL. Así mismo, se puede ver un ejemplo del patrón Outbox, donde persistimos eventos para poder ser distribuidos en nuestro EventBroker.
 
 Este repositorio está basado en el repositorio de sidecars visto en el tutorial 5 del curso. Por tal motivo, puede usar ese mismo repositorio para entender algunos detalles que este README no cubre.
 
@@ -15,7 +15,11 @@ Este repositorio sigue en general la misma estructura del repositorio de origen.
     ```
     **Nota**: Puede encontrar las diferentes versiones en esta [página](https://pulsar.apache.org/download/).
 - El directorio **data** ahora también cuenta con un nuevo directorio llamado **mysql**, el cual aloja los datos de la base de datos.
-- El archivo **init.sql** en la raíz del proyecto se usa como punto de entrada de la base datos MySQL para configurar esquemas y tablas:
+- El archivo **init.sql** en la raíz del proyecto se usa como punto de entrada de la base datos MySQL para configurar esquemas y tablas.
+- El archivo **repositorios** en el módulo de vuelos de la capa de infraestructura ahora cuenta con un repositorio para persistir eventos en una tabla de Outbox.
+- El archivo **mapeadores** en el módulo de vuelos de la capa de infraestructura ahora cuenta con un mapeador para tranformar de eventos de dominio a eventos de integración.
+
+**Nota**: Se eliminó el código redundante de servicios de aplicación y endpoints que enrutaban a él.
 
 ## AeroAlpes
 ### Ejecutar Base de datos

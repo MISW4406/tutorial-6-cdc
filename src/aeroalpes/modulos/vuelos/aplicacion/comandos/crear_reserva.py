@@ -7,7 +7,7 @@ from aeroalpes.seedwork.aplicacion.comandos import ejecutar_commando as comando
 from aeroalpes.modulos.vuelos.dominio.entidades import Reserva
 from aeroalpes.seedwork.infraestructura.uow import UnidadTrabajoPuerto
 from aeroalpes.modulos.vuelos.aplicacion.mapeadores import MapeadorReserva
-from aeroalpes.modulos.vuelos.infraestructura.repositorios import RepositorioReservas
+from aeroalpes.modulos.vuelos.infraestructura.repositorios import RepositorioReservas, RepositorioEventosReservas
 
 @dataclass
 class CrearReserva(Comando):
@@ -29,10 +29,10 @@ class CrearReservaHandler(CrearReservaBaseHandler):
         reserva: Reserva = self.fabrica_vuelos.crear_objeto(reserva_dto, MapeadorReserva())
         reserva.crear_reserva(reserva)
 
-        repositorio = self.fabrica_repositorio.crear_objeto(RepositorioReservas.__class__)
+        repositorio = self.fabrica_repositorio.crear_objeto(RepositorioReservas)
+        repositorio_eventos = self.fabrica_repositorio.crear_objeto(RepositorioEventosReservas)
 
-        UnidadTrabajoPuerto.registrar_batch(repositorio.agregar, reserva)
-        UnidadTrabajoPuerto.savepoint()
+        UnidadTrabajoPuerto.registrar_batch(repositorio.agregar, reserva, repositorio_eventos_func=repositorio_eventos.agregar)
         UnidadTrabajoPuerto.commit()
 
 

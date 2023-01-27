@@ -53,16 +53,16 @@ def create_app(configuracion={}):
     # Init la aplicacion de Flask
     app = Flask(__name__, instance_relative_config=True)
     
-    app.config['SQLALCHEMY_DATABASE_URI'] =\
-            'sqlite:///' + os.path.join(basedir, 'database.db')
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
     app.secret_key = '9d58f98f-3ae8-4149-a09f-3a8c2012e32c'
     app.config['SESSION_TYPE'] = 'filesystem'
     app.config['TESTING'] = configuracion.get('TESTING')
 
      # Inicializa la DB
-    from aeroalpes.config.db import init_db
+    from aeroalpes.config.db import init_db, database_connection
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_connection(configuracion, basedir=basedir)
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
     init_db(app)
 
     from aeroalpes.config.db import db

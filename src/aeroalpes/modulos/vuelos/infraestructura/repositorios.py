@@ -6,15 +6,17 @@ persistir objetos dominio (agregaciones) en la capa de infraestructura del domin
 """
 
 from aeroalpes.config.db import db
-from aeroalpes.modulos.vuelos.dominio.repositorios import RepositorioReservas, RepositorioProveedores
+from aeroalpes.modulos.vuelos.dominio.repositorios import RepositorioReservas, RepositorioProveedores, RepositorioEventosReservas
 from aeroalpes.modulos.vuelos.dominio.objetos_valor import NombreAero, Odo, Leg, Segmento, Itinerario, CodigoIATA
 from aeroalpes.modulos.vuelos.dominio.entidades import Proveedor, Aeropuerto, Reserva
 from aeroalpes.modulos.vuelos.dominio.fabricas import FabricaVuelos
 from .dto import Reserva as ReservaDTO
-from .mapeadores import MapeadorReserva
+from .dto import EventosReserva
+from .mapeadores import MapeadorReserva, MapadeadorEventosReserva
 from uuid import UUID
+from pulsar.schema import *
 
-class RepositorioProveedoresSQLite(RepositorioProveedores):
+class RepositorioProveedoresSQLAlchemy(RepositorioProveedores):
 
     def obtener_por_id(self, id: UUID) -> Reserva:
         # TODO
@@ -44,7 +46,7 @@ class RepositorioProveedoresSQLite(RepositorioProveedores):
         raise NotImplementedError
 
 
-class RepositorioReservasSQLite(RepositorioReservas):
+class RepositorioReservasSQLAlchemy(RepositorioReservas):
 
     def __init__(self):
         self._fabrica_vuelos: FabricaVuelos = FabricaVuelos()
@@ -71,4 +73,44 @@ class RepositorioReservasSQLite(RepositorioReservas):
 
     def eliminar(self, reserva_id: UUID):
         # TODO
+        raise NotImplementedError
+
+class RepositorioEventosReservaSQLAlchemy(RepositorioEventosReservas):
+
+    def __init__(self):
+        self._fabrica_vuelos: FabricaVuelos = FabricaVuelos()
+
+    @property
+    def fabrica_vuelos(self):
+        return self._fabrica_vuelos
+
+    def obtener_por_id(self, id: UUID) -> Reserva:
+        reserva_dto = db.session.query(ReservaDTO).filter_by(id=str(id)).one()
+        return self.fabrica_vuelos.crear_objeto(reserva_dto, MapadeadorEventosReserva())
+
+    def obtener_todos(self) -> list[Reserva]:
+        raise NotImplementedError
+
+    def agregar(self, evento):
+        reserva_evento = self.fabrica_vuelos.crear_objeto(evento, MapadeadorEventosReserva())
+
+        parser_payload = JsonSchema(reserva_evento.data.__class__)
+        json_str = parser_payload.encode(reserva_evento.data)
+
+        evento_dto = EventosReserva()
+        evento_dto.id = str(evento.id)
+        evento_dto.id_entidad = str(evento.id_reserva)
+        evento_dto.fecha_evento = evento.fecha_creacion
+        evento_dto.version = str(reserva_evento.specversion)
+        evento_dto.tipo_evento = evento.__class__.__name__
+        evento_dto.formato_contenido = 'JSON'
+        evento_dto.nombre_servicio = str(reserva_evento.service_name)
+        evento_dto.contenido = json_str
+
+        db.session.add(evento_dto)
+
+    def actualizar(self, reserva: Reserva):
+        raise NotImplementedError
+
+    def eliminar(self, reserva_id: UUID):
         raise NotImplementedError

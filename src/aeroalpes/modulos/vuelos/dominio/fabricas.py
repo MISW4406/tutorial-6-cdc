@@ -11,12 +11,13 @@ from .excepciones import TipoObjetoNoExisteEnDominioVuelosExcepcion
 from aeroalpes.seedwork.dominio.repositorios import Mapeador, Repositorio
 from aeroalpes.seedwork.dominio.fabricas import Fabrica
 from aeroalpes.seedwork.dominio.entidades import Entidad
+from aeroalpes.seedwork.dominio.eventos import EventoDominio
 from dataclasses import dataclass
 
 @dataclass
 class _FabricaReserva(Fabrica):
     def crear_objeto(self, obj: any, mapeador: Mapeador) -> any:
-        if isinstance(obj, Entidad):
+        if isinstance(obj, Entidad) or isinstance(obj, EventoDominio):
             return mapeador.entidad_a_dto(obj)
         else:
             reserva: Reserva = mapeador.dto_a_entidad(obj)

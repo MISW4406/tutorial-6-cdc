@@ -13,7 +13,7 @@ class ObtenerReserva(Query):
 class ObtenerReservaHandler(ReservaQueryBaseHandler):
 
     def handle(self, query: ObtenerReserva) -> QueryResultado:
-        repositorio = self.fabrica_repositorio.crear_objeto(RepositorioReservas.__class__)
+        repositorio = self.fabrica_repositorio.crear_objeto(RepositorioReservas)
         reserva =  self.fabrica_vuelos.crear_objeto(repositorio.obtener_por_id(query.id), MapeadorReserva())
         return QueryResultado(resultado=reserva)
 
