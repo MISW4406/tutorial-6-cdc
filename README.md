@@ -6,7 +6,7 @@ Este repositorio está basado en el repositorio de sidecars visto en el tutorial
 
 ## Dev Containers
 
-El repositorio incluye configuración para [Dev Containers](https://containers.dev/). Si su editor lo soporta solo debe abrir la carpeta y el contenedor se construirá instalando automáticamente todas las dependencias requeridas.
+El repositorio incluye configuracion para [Dev Containers](https://containers.dev/). Si su editor lo soporta solo debe abrir la carpeta y el contenedor se construira instalando automaticamente todas las dependencias requeridas.
 
 ## Estructura del proyecto
 
@@ -43,23 +43,10 @@ Desde el directorio principal ejecute el siguiente comando.
 flask --app src/aeroalpes/api run
 ```
 
-Si no dispone de una base de datos MySQL puede usar SQLite estableciendo la variable
-de entorno `DB_ENGINE`:
-
-```bash
-DB_ENGINE=sqlite flask --app src/aeroalpes/api run
-```
-
 Siempre puede ejecutarlo en modo DEBUG:
 
 ```bash
 flask --app src/aeroalpes/api --debug run
-```
-
-O usando SQLite:
-
-```bash
-DB_ENGINE=sqlite flask --app src/aeroalpes/api --debug run
 ```
 
 ### Ejecutar pruebas
