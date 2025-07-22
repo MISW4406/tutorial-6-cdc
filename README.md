@@ -4,6 +4,10 @@ Repositorio con código base para la liberación de datos por medio de eventos c
 
 Este repositorio está basado en el repositorio de sidecars visto en el tutorial 5 del curso. Por tal motivo, puede usar ese mismo repositorio para entender algunos detalles que este README no cubre.
 
+## Dev Containers
+
+El repositorio incluye configuracion para [Dev Containers](https://containers.dev/). Si su editor lo soporta solo debe abrir la carpeta y el contenedor se construira instalando automaticamente todas las dependencias requeridas.
+
 ## Estructura del proyecto
 
 Este repositorio sigue en general la misma estructura del repositorio de origen. Sin embargo, hay un par de adiciones importante mencionar:
@@ -26,7 +30,7 @@ Este repositorio sigue en general la misma estructura del repositorio de origen.
 Desde el directorio principal ejecute el siguiente comando.
 
 ```bash
-docker-compose --profiles db up
+docker-compose --profile db up
 ```
 
 Este comando descarga las imágenes e instala las dependencias de la base datos.
@@ -101,10 +105,10 @@ python src/sidecar/cliente.py
 
 ### Compilación gRPC
 
-Desde el directorio `src/sidecar` ejecute el siguiente comando.
+Desde el directorio `src/sidecar/aeroalpes` ejecute el siguiente comando.
 
 ```bash
-python -m grpc_tools.protoc -Iprotos --python_out=./pb2py --pyi_out=./pb2py --grpc_python_out=./pb2py protos/vuelos.proto
+python -m grpc_tools.protoc -/protos --python_out=./aeroalpes/pb2py --pyi_out=./aeroalpes/pb2py --grpc_python_out=./aeroalpes/pb2py aeroalpes/protos/vuelos.proto
 ```
 
 ### Crear imagen Docker
@@ -181,6 +185,10 @@ docker run aeroalpes/ui
 
 ```
 wget https://archive.apache.org/dist/pulsar/pulsar-2.10.1/connectors/pulsar-io-debezium-mysql-2.10.1.nar
+```
+### Ejecutar Pulsar
+```bash
+docker-compose --profile pulsar up
 ```
 
 ### Ejecutar Debezium

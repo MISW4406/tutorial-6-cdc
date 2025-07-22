@@ -17,7 +17,10 @@ services:
       - ./data/zookeeper:/pulsar/data/zookeeper
     environment:
       - metadataStoreUrl=zk:zookeeper:2181
-    command: bin/pulsar initialize-cluster-metadata --cluster cluster-a --zookeeper zookeeper:2181 --configuration-store zookeeper:2181 --web-service-url http://broker:8080 --broker-service-url pulsar://broker:6650
+    command: >
+      bash -c "bin/apply-config-from-env.py conf/zookeeper.conf && \
+             bin/generate-zookeeper-config.sh conf/zookeeper.conf && \
+             exec bin/pulsar zookeeper"
     healthcheck:
       test: ["CMD", "bin/pulsar-zookeeper-ruok.sh"]
       interval: 10s
@@ -32,13 +35,7 @@ services:
     profiles: ["pulsar"]
     networks:
       - pulsar
-    command: >
-      bin/pulsar initialize-cluster-metadata \
-               --cluster cluster-a \
-               --zookeeper zookeeper:2181 \
-               --configuration-store zookeeper:2181 \
-               --web-service-url http://broker:8080 \
-               --broker-service-url pulsar://broker:6650
+    command: bin/pulsar initialize-cluster-metadata --cluster cluster-a --zookeeper zookeeper:2181 --configuration-store zookeeper:2181 --web-service-url http://broker:8080 --broker-service-url pulsar://broker:6650
     depends_on:
       zookeeper:
         condition: service_healthy
@@ -83,7 +80,10 @@ services:
       - managedLedgerDefaultWriteQuorum=1
       - managedLedgerDefaultAckQuorum=1
       - advertisedAddress=broker
+      #Si se realiza una ejecución manual del microservicio desde el IDE, se debe usar esta línea:
       - advertisedListeners=external:pulsar://127.0.0.1:6650
+      #Si se realiza una ejecución completa de todo (incluido el microservicio) con docker compose, se debería usar esta línea en lugar de la anterior para que se comunique con el contenedor broker dentro de una misma ejecución
+      #- advertisedListeners=external:pulsar://broker:6650
     depends_on:
       zookeeper:
         condition: service_healthy
@@ -99,7 +99,7 @@ services:
   
   # MySQL8
   db:
-    image: mysql:8
+    image: mysql:8.0.28
     hostname: mysqldb
     container_name: mysqldb
     cap_add:

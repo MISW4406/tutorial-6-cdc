@@ -18,10 +18,7 @@ def app():
 
     # create the database and load test data
     with app.app_context():
-        init_db(app)
-
         from aeroalpes.config.db import db
-
         importar_modelos_alchemy()
         db.create_all()
 
